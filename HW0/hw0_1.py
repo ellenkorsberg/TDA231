@@ -3,18 +3,18 @@ import matplotlib.pyplot as plt
 import operator
 import sys
 
+# Predefinitions
 mean = [1, 1]
 cov = [[0.1, -0.05], [-0.05, 0.2]]
 
-
+# Define the function f.
 def f(x,r):
-    inverse = np.linalg.inv(cov)
-    diff = list(map(operator.sub, x, mean))
-    return (np.transpose(diff).dot(inverse.dot(diff)))/2 - r
-    #return ((np.array(map(operator.sub,x,mean)).T.tolist()*np.linalg.inv(cov)*map(operator.sub,x,mean))/2) - r
+    return (np.transpose(list(map(operator.sub, x, mean))).dot(np.linalg.inv(cov).dot(list(map(operator.sub, x, mean)))))/2 - r
 
-x = np.linspace(-10, 10, num=200)
-y = np.linspace(-10, 10, num=200)
+
+# Plot level sets f(x,r)=0 for r=1,2,3.
+x = np.linspace(-1, 3, num=200)
+y = np.linspace(-1, 3, num=200)
 xx,yy = np.meshgrid(x, y)
 levels = []
 
@@ -29,32 +29,26 @@ for r in range(1,4):
 array1 = np.array(levels[0])
 array2 = np.array(levels[1])
 array3 = np.array(levels[2])
-'''
-array1 = array1[:, :, 0, 0]
-array2 = array2[:, :, 0, 0]
-array3 = array3[:, :, 0, 0]
-'''
+plt.contour(xx, yy, array1, [0], colors = 'r')
+plt.contour(xx, yy, array2, [0], colors = 'g')
+plt.contour(xx, yy, array3, [0], colors = 'b')
 
-c1 = plt.contour(xx, yy, array1, [0], colors = 'r')
-c2 = plt.contour(xx, yy, array2, [0], colors = 'g')
-c3 = plt.contour(xx, yy, array3, [0], colors = 'b')
-plt.show()
-sys.exit()
-
-points = np.random.multivariate_normal(mean, cov, 10)
+# Gather and plot points outside and inside the level set f(x,3)=0.
+points = np.random.multivariate_normal(mean, cov, 1000)
 bluePoints = []
 blackPoints = []
 for i in range(len(points)):
-    xy = points[i]
-    if (f(xy, 3)) > 0:
-        bluePoints.append(xy)
+    if f(points[i], 3) > 0:
+        blackPoints.append(points[i])
     else:
-        blackPoints.append(xy)
+        bluePoints.append(points[i])
 
-print(bluePoints)
-print(blackPoints)
+plt.plot(np.transpose(blackPoints)[1], np.transpose(blackPoints)[0], 'k.')
+plt.plot(np.transpose(bluePoints)[1], np.transpose(bluePoints)[0], 'b.')
 
-#plt.plot(blackPoints)
-#plt.show()
-#res = f(x,1)
-#print res
+# Set title of plot to number of points outside level set f(x,3)=0.
+plt.title('Number of black points: ', loc='left')
+plt.title(len(blackPoints))
+
+plt.show()
+sys.exit()
