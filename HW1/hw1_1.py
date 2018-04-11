@@ -29,6 +29,23 @@ def myplot1(X):
         ax.plot(x1, x2)
         ax.set_aspect(1)
 
+    outsideCircle = [0] * 3
+    for i in range(X.shape[0]):
+        xPosition = X[i][0]
+        yPosition = X[i][1]
+        distance = np.sqrt((xPosition-est[0][0])**2 + (yPosition-est[0][1])**2)
+        if distance < est[1]:
+            outsideCircle[0] += 1
+        if distance < 2*est[1]:
+            outsideCircle[1] += 1
+        if distance < 3*est[1]:
+            outsideCircle[2] += 1
+
+    print(outsideCircle)
+    ax.legend([round(outsideCircle[0]/X.shape[0],3), round(outsideCircle[1]/X.shape[0],3), round(outsideCircle[2]/X.shape[0],3)])
+
+
+
     plt.show()
 
 
