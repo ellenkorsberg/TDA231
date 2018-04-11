@@ -18,38 +18,43 @@ def sge(X):
 
 def myplot1(X):
     est = sge(X)
+    mu = est[0]
+    sigma = est[1]
+
     fig, ax = plt.subplots(1)
+    # Scatter plot the points
     ax.scatter(X[:,0],X[:,1])
 
+    # Plot circles
     theta = np.linspace(0, 2*np.pi, 100)
     for i in range(1,4):
-        r = i*est[1]
-        x1 = r*np.cos(theta) + est[0][0]
-        x2 = r*np.sin(theta) + est[0][1]
+        r = i*sigma
+        x1 = r*np.cos(theta) + mu[0]
+        x2 = r*np.sin(theta) + mu[1]
         ax.plot(x1, x2)
         ax.set_aspect(1)
 
+    # Collect legend information
     outsideCircle = [0] * 3
-    for i in range(X.shape[0]):
+    nbrOfPoints = X.shape[0]
+    for i in range(nbrOfPoints):
         xPosition = X[i][0]
         yPosition = X[i][1]
-        distance = np.sqrt((xPosition-est[0][0])**2 + (yPosition-est[0][1])**2)
-        if distance < est[1]:
+        distance = np.sqrt((xPosition-mu[0])**2 + (yPosition-mu[1])**2)
+        if distance < sigma:
             outsideCircle[0] += 1
-        if distance < 2*est[1]:
+        if distance < 2*sigma:
             outsideCircle[1] += 1
-        if distance < 3*est[1]:
+        if distance < 3*sigma:
             outsideCircle[2] += 1
 
     print(outsideCircle)
-    ax.legend([round(outsideCircle[0]/X.shape[0],3), round(outsideCircle[1]/X.shape[0],3), round(outsideCircle[2]/X.shape[0],3)])
-
-
-
+    ax.legend([round(outsideCircle[0]/nbrOfPoints,3), round(outsideCircle[1]/nbrOfPoints,3), round(outsideCircle[2]/nbrOfPoints,3)])
     plt.show()
 
 
 # Load the data.
 X = np.loadtxt("dataset0.txt")
+# Extract the first two features
 X = X[:,:2]
 myplot1(X)
