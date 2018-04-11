@@ -23,7 +23,7 @@ def myplot1(X):
 
     fig, ax = plt.subplots(1)
     # Scatter plot the points
-    ax.scatter(X[:,0],X[:,1])
+    ax.scatter(X[:,0],X[:,1],s=5)
 
     # Plot circles
     theta = np.linspace(0, 2*np.pi, 100)
