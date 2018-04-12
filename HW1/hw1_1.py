@@ -1,5 +1,8 @@
 import numpy as np
+import math
 import matplotlib.pyplot as plt
+from scipy.special import gamma
+from scipy.stats import invgamma
 
 def sge(X):
     # Calculate mu
@@ -11,7 +14,7 @@ def sge(X):
     # Calculate sigma
     sigma = 0
     for i in range(rows):
-        sigma += np.dot(np.transpose(X[i][:]-mu), X[i][:]-mu)/rows
+        sigma += np.dot(np.transpose(X[i][:]-mu), X[i][:]-mu)/(rows*X.shape[1])
     sigma = np.sqrt(sigma)
 
     return mu,sigma
@@ -48,7 +51,6 @@ def myplot1(X):
         if distance < 3*sigma:
             outsideCircle[2] += 1
 
-    print(outsideCircle)
     ax.legend([round(outsideCircle[0]/nbrOfPoints,3), round(outsideCircle[1]/nbrOfPoints,3), round(outsideCircle[2]/nbrOfPoints,3)])
     plt.show()
 
@@ -57,4 +59,32 @@ def myplot1(X):
 X = np.loadtxt("dataset0.txt")
 # Extract the first two features
 X = X[:,:2]
-myplot1(X)
+print(sge(X))
+
+
+
+def myplot2(X):
+    fig, ax = plt.subplots(1)
+
+    # Plot the prior and posterior
+    s = 0
+    for i in range(X.shape[0]):
+        s += np.dot(np.transpose(X[i][:]-sge(X)[0]), X[i][:]-sge(X)[0])
+
+    s = s/2
+    sigma = np.linspace(0.000001, 25000, num=500)
+    alphaPrior = 1
+    alphaPost = 1+(X.shape[1]*X.shape[0]/2)
+    beta = 1 + s
+    ax.plot(sigma, invgamma.pdf(sigma, alphaPrior))
+    ax.plot(sigma, invgamma.pdf(sigma, alphaPost, scale = beta))
+
+    plt.show()
+
+    # alpha = 10
+    # ax.plot(sigma, invgamma.pdf(sigma, alpha))
+    # ax.plot(sigma, invgamma.pdf(sigma, alpha, scale = beta))
+
+
+
+myplot2(X)
