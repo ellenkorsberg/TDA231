@@ -68,7 +68,9 @@ def myplot2(X):
     mu = sge(X)[0]
     # Plot the prior and posterior
     s = np.sum(np.einsum('ij,ij->i',X-mu,X-mu))/2
-    sigma = np.linspace(0.000001, 200, num=500)
+    sigma1 = np.linspace(0.000001, 10, num=500)
+    sigma2 = np.linspace(0.000001, 11000, num=500)
+    sigma3 = np.linspace(0.000001, 2, num=500)
 
     alphaPrior1 = 1
     alphaPost1 = 1+(X.shape[1]*X.shape[0]/2)
@@ -76,17 +78,32 @@ def myplot2(X):
     alphaPost2 = 10+(X.shape[1]*X.shape[0]/2)
     beta = 1 + s
 
-    plt.subplot(2, 1, 1)
-    plt.plot(sigma, invgamma.pdf(sigma**2, alphaPrior1))
-    plt.plot(sigma, invgamma.pdf(sigma**2, alphaPost1, scale = beta))
-    plt.title('alpha = 1')
-    plt.legend(['Prior', 'Posterior'])
+    plt.subplot(2, 2, 1)
+    plt.plot(sigma1, invgamma.pdf(sigma1, alphaPrior1))
+    plt.title('Prior distribution')
+    plt.ylabel('pdf value')
+    plt.legend([r'$\alpha = 1$'])
 
-    plt.subplot(2, 1, 2)
-    plt.plot(sigma, invgamma.pdf(sigma**2, alphaPrior2))
-    plt.plot(sigma, invgamma.pdf(sigma**2, alphaPost2, scale = beta))
-    plt.title('alpha = 10')
-    plt.legend(['Prior', 'Posterior'])
+    plt.subplot(2, 2, 2)
+    plt.plot(sigma3, invgamma.pdf(sigma3, alphaPrior2))
+    plt.title('Prior distribution')
+    plt.ylabel('pdf value')
+    plt.legend([r'$\alpha = 10$'])
+
+
+    plt.subplot(2, 2, 3)
+    plt.plot(sigma2, invgamma.pdf(sigma2, alphaPost1, scale = beta))
+    plt.title('Posterior distribution')
+    plt.xlabel(r'$\sigma^2$')
+    plt.ylabel('pdf value')
+    plt.legend([r'$\alpha = 1$'])
+
+    plt.subplot(2, 2, 4)
+    plt.plot(sigma2, invgamma.pdf(sigma2, alphaPost2, scale = beta))
+    plt.title('Posterior distribution')
+    plt.xlabel(r'$\sigma^2$')
+    plt.ylabel('pdf value')
+    plt.legend([r'$\alpha = 10$'])
 
     plt.show()
 
