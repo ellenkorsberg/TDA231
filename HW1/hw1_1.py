@@ -64,27 +64,30 @@ print(sge(X))
 
 
 def myplot2(X):
-    fig, ax = plt.subplots(1)
-
+    fig, ax1 = plt.subplots(1)
+    mu = sge(X)[0]
     # Plot the prior and posterior
-    s = 0
-    for i in range(X.shape[0]):
-        s += np.dot(np.transpose(X[i][:]-sge(X)[0]), X[i][:]-sge(X)[0])
+    s = np.sum(np.einsum('ij,ij->i',X-mu,X-mu))/2
+    sigma = np.linspace(0.000001, 200, num=500)
 
-    s = s/2
-    sigma = np.linspace(0.000001, 25000, num=500)
-    alphaPrior = 1
-    alphaPost = 1+(X.shape[1]*X.shape[0]/2)
+    alphaPrior1 = 1
+    alphaPost1 = 1+(X.shape[1]*X.shape[0]/2)
+    alphaPrior2 = 10
+    alphaPost2 = 10+(X.shape[1]*X.shape[0]/2)
     beta = 1 + s
-    ax.plot(sigma, invgamma.pdf(sigma, alphaPrior))
-    ax.plot(sigma, invgamma.pdf(sigma, alphaPost, scale = beta))
+
+    plt.subplot(2, 1, 1)
+    plt.plot(sigma, invgamma.pdf(sigma**2, alphaPrior1))
+    plt.plot(sigma, invgamma.pdf(sigma**2, alphaPost1, scale = beta))
+    plt.title('alpha = 1')
+    plt.legend(['Prior', 'Posterior'])
+
+    plt.subplot(2, 1, 2)
+    plt.plot(sigma, invgamma.pdf(sigma**2, alphaPrior2))
+    plt.plot(sigma, invgamma.pdf(sigma**2, alphaPost2, scale = beta))
+    plt.title('alpha = 10')
+    plt.legend(['Prior', 'Posterior'])
 
     plt.show()
-
-    # alpha = 10
-    # ax.plot(sigma, invgamma.pdf(sigma, alpha))
-    # ax.plot(sigma, invgamma.pdf(sigma, alpha, scale = beta))
-
-
 
 myplot2(X)
