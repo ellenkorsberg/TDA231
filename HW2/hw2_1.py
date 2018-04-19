@@ -2,6 +2,9 @@ import numpy as np
 from numpy import genfromtxt
 import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
+from sklearn.model_selection import KFold
+
+
 
 data = genfromtxt('dataset2.txt', delimiter=',')
 labels = data[:,-1]
