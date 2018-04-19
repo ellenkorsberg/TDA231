@@ -6,6 +6,7 @@ data = digits.data
 target_names = digits.target_names
 import matplotlib.pyplot as plt
 y = digits.target
+<<<<<<< HEAD
 #plt.matshow(digits.images[5])
 #plt.show()
 
@@ -23,3 +24,7 @@ for i in range(digits.target.shape[0]):
 
 print(np.array(fives).shape)
 print(np.array(eights).shape)
+=======
+plt.matshow(digits.images[5])
+plt.show()
+>>>>>>> HW2

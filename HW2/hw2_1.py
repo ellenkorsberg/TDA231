@@ -109,4 +109,20 @@ mu2 = sge(eights)[0]
 pred = new_classifier(digits.images[5].flatten(), mu1, mu2)
 print(pred)
 plt.matshow(digits.images[5])
-plt.show()
+#plt.show()
+
+scaledDataVar = []
+for i in range(len(data)):
+    sample = data[i][:]
+    maxGrey = np.max(sample)
+    scaledSample = sample/maxGrey
+    scaledSample = scaledSample.reshape((8,8))
+    variance = np.zeros(16)
+    # rows:
+    for j in range(len(scaledSample)): #len(scaledSample)
+        variance[j] = np.var(scaledSample[j][:])
+        variance[j+8] = np.var(scaledSample[:][j])
+
+    scaledDataVar.append(variance)
+
+print(np.array(scaledDataVar).shape)
