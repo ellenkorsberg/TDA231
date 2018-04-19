@@ -7,7 +7,5 @@ target_names = digits.target_names
 print (target_names)
 import matplotlib.pyplot as plt
 y = digits.target
-#plt.matshow(digits.images[5])
-#plt.show()
-
-print(digits.return_X_y)
+plt.matshow(digits.images[5])
+plt.show()
