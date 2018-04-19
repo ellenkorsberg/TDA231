@@ -27,8 +27,8 @@ def sge(X):
 
 
 def sph_bayes(Xtest, trainingData, estPos1, estNeg1):
-    ccdPos1 = multivariate_normal.pdf(Xtest, mean=estPos1[0], cov=[[estPos1[1], 0, 0],[0, estPos1[1], 0],[0, 0, estPos1[1]]])
-    ccdNeg1 = multivariate_normal.pdf(Xtest, mean=estNeg1[0], cov=[[estNeg1[1], 0, 0],[0, estNeg1[1], 0],[0, 0, estNeg1[1]]])
+    ccdPos1 = multivariate_normal.pdf(Xtest, mean=estPos1[0], cov=estPos1[1]*np.identity(Xtest.shape[0]))
+    ccdNeg1 = multivariate_normal.pdf(Xtest, mean=estNeg1[0], cov=estNeg1[1]*np.identity(Xtest.shape[0]))
 
     postPos1 = ccdPos1/(ccdPos1 + ccdNeg1)
     postNeg1 = ccdNeg1/(ccdPos1 + ccdNeg1)
@@ -66,10 +66,10 @@ def crossValidationBayes(data, labelIndex):
     error = 0
     for train_index, test_index in kf.split(X):
        X_train, X_test = X[train_index], X[test_index]
-       estPos1 = sge(X_train[X_train[:,3] == 1][:,:3])
-       estNeg1 = sge(X_train[X_train[:,3] == -1][:,:3])
+       estPos1 = sge(X_train[X_train[:,labelIndex] == 1][:,:labelIndex])
+       estNeg1 = sge(X_train[X_train[:,labelIndex] == -1][:,:labelIndex])
        for i in range(X_test.shape[0]):
-           pred = sph_bayes(X_test[:,:3][i], X_train, estPos1, estNeg1)
+           pred = sph_bayes(X_test[:,:labelIndex][i], X_train, estPos1, estNeg1)
            if pred[2] != X_test[:][i][labelIndex]:
                error += 1
 
@@ -128,5 +128,5 @@ def secondPracticalProblem():
 
 
 
-#firstPracticalProblem()
-secondPracticalProblem()
+firstPracticalProblem()
+#secondPracticalProblem()
