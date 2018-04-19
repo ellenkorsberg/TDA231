@@ -26,9 +26,7 @@ def sge(X):
     return mu,sigmaSquare
 
 
-def sph_bayes(Xtest, trainingData): # other parameters needed.
-    estPos1 = sge(trainingData[trainingData[:,3] == 1][:,:3])
-    estNeg1 = sge(trainingData[trainingData[:,3] == -1][:,:3])
+def sph_bayes(Xtest, trainingData, estPos1, estNeg1):
     ccdPos1 = multivariate_normal.pdf(Xtest, mean=estPos1[0], cov=[[estPos1[1], 0, 0],[0, estPos1[1], 0],[0, 0, estPos1[1]]])
     ccdNeg1 = multivariate_normal.pdf(Xtest, mean=estNeg1[0], cov=[[estNeg1[1], 0, 0],[0, estNeg1[1], 0],[0, 0, estNeg1[1]]])
 
@@ -54,15 +52,9 @@ def scaleData(data):
    scaledDataVar = []
    for i in range(len(data)):
        sample = data[i,:64]
-       maxGrey = np.max(sample)
-       scaledSample = sample/maxGrey
+       scaledSample = sample/255
        scaledSample = scaledSample.reshape((8,8))
-       variance = np.zeros(16)
-
-       for j in range(len(scaledSample)):
-           variance[j] = np.var(scaledSample[j][:])
-           variance[j+8] = np.var(scaledSample[:][j])
-
+       variance = np.r_[np.var(scaledSample, axis=1), np.var(scaledSample, axis=0)]
        scaledDataVar.append(np.append(variance, data[i][64]))
 
    return np.array(scaledDataVar)
@@ -74,8 +66,10 @@ def crossValidationBayes(data, labelIndex):
     error = 0
     for train_index, test_index in kf.split(X):
        X_train, X_test = X[train_index], X[test_index]
+       estPos1 = sge(X_train[X_train[:,3] == 1][:,:3])
+       estNeg1 = sge(X_train[X_train[:,3] == -1][:,:3])
        for i in range(X_test.shape[0]):
-           pred = sph_bayes(X_test[:,:3][i], X_train)
+           pred = sph_bayes(X_test[:,:3][i], X_train, estPos1, estNeg1)
            if pred[2] != X_test[:][i][labelIndex]:
                error += 1
 
@@ -88,9 +82,9 @@ def crossValidationNewClassifier(data, labelIndex):
     error = 0
     for train_index, test_index in kf.split(X):
        X_train, X_test = X[train_index], X[test_index]
+       mu1 = sge(X_train[X_train[:,labelIndex] == 1][:,:labelIndex])[0]
+       mu2 = sge(X_train[X_train[:,labelIndex] == -1][:,:labelIndex])[0]
        for i in range(X_test.shape[0]):
-           mu1 = sge(X_train[X_train[:,labelIndex] == 1][:,:labelIndex])[0]
-           mu2 = sge(X_train[X_train[:,labelIndex] == -1][:,:labelIndex])[0]
            pred = new_classifier(X_test[:,:labelIndex][i], mu1, mu2)
            if pred != X_test[:][i][labelIndex]:
                error += 1
@@ -114,9 +108,6 @@ def getFiveAndEightClasses(digits):
         elif digits.target[i] == 8:
             eights.append(np.append(digits.data[:][i], -1))
 
-    fives = np.array(fives)
-    eights = np.array(eights)
-
     return np.concatenate((fives,eights))
 
 
@@ -137,5 +128,5 @@ def secondPracticalProblem():
 
 
 
-firstPracticalProblem()
-#secondPracticalProblem()
+#firstPracticalProblem()
+secondPracticalProblem()
