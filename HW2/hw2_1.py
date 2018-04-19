@@ -3,6 +3,7 @@ from numpy import genfromtxt
 import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from sklearn.model_selection import KFold
+from sklearn import datasets
 
 
 
@@ -136,5 +137,5 @@ def secondPracticalProblem():
 
 
 
-#firstPracticalProblem()
-secondPracticalProblem()
+firstPracticalProblem()
+#secondPracticalProblem()
