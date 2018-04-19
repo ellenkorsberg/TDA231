@@ -52,29 +52,61 @@ def new_classifier(Xtest, mu1, mu2):
 
 
 
+#
+# # 5-fold cross validation error for Bayes classifier
+# X = data
+# kf = KFold(n_splits=5, shuffle=True)
+# error = 0
+# for train_index, test_index in kf.split(X):
+#    X_train, X_test = X[train_index], X[test_index]
+#    for i in range(X_test.shape[0]):
+#        pred = sph_bayes(X_test[:,:3][i], X_train)
+#        if pred[2] != X_test[:][i][3]:
+#            error += 1
+#
+# print("Bayes error: ", error/5)
+#
+# # 5-fold cross validation error for other classifier
+# error = 0
+# for train_index, test_index in kf.split(X):
+#    X_train, X_test = X[train_index], X[test_index]
+#    for i in range(X_test.shape[0]):
+#        mu1 = sge(X_train[X_train[:,3] == 1][:,:3])[0]
+#        mu2 = sge(X_train[X_train[:,3] == -1][:,:3])[0]
+#        pred = new_classifier(X_test[:,:3][i], mu1, mu2)
+#        if pred != X_test[:][i][3]:
+#            error += 1
+#
+# print("Other error: ", error/5)
 
-# 5-fold cross validation error for Bayes classifier
-X = data
-kf = KFold(n_splits=5, shuffle=True)
-error = 0
-for train_index, test_index in kf.split(X):
-   X_train, X_test = X[train_index], X[test_index]
-   for i in range(X_test.shape[0]):
-       pred = sph_bayes(X_test[:,:3][i], X_train)
-       if pred[2] != X_test[:][i][3]:
-           error += 1
 
-print("Bayes error: ", error/5)
 
-# 5-fold cross validation error for other classifier
-error = 0
-for train_index, test_index in kf.split(X):
-   X_train, X_test = X[train_index], X[test_index]
-   for i in range(X_test.shape[0]):
-       mu1 = sge(X_train[X_train[:,3] == 1][:,:3])[0]
-       mu2 = sge(X_train[X_train[:,3] == -1][:,:3])[0]
-       pred = new_classifier(X_test[:,:3][i], mu1, mu2)
-       if pred != X_test[:][i][3]:
-           error += 1
+import numpy as np
+from sklearn import datasets
+digits = datasets.load_digits()
 
-print("Other error: ", error/5)
+data = digits.data
+target_names = digits.target_names
+import matplotlib.pyplot as plt
+y = digits.target
+
+
+fives = []
+eights = []
+
+for i in range(digits.target.shape[0]):
+    if digits.target[i] == 5:
+        fives.append(digits.data[:][i])
+    elif digits.target[i] == 8:
+        eights.append(digits.data[:][i])
+
+fives = np.array(fives)
+eights = np.array(eights)
+
+
+mu1 = sge(fives)[0]
+mu2 = sge(eights)[0]
+pred = new_classifier(digits.images[5].flatten(), mu1, mu2)
+print(pred)
+plt.matshow(digits.images[5])
+plt.show()
