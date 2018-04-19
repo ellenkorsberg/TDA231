@@ -38,4 +38,20 @@ def sph_bayes(Xtest, trainingData): # other parameters needed.
     return [postPos1, postNeg1, -1]
 
 
-print(sph_bayes(data[:,:3][1500], data))
+#print(sph_bayes(data[:,:3][1500], data))
+
+def new_classifier(Xtest, mu1, mu2):
+    b = mu1 + mu2
+    b = [(1/2)*x for x in b]
+    print(b)
+    denominator = np.sqrt(np.dot(np.transpose(mu1-mu2),mu1-mu2))
+    print(denominator)
+    Ytest = np.sign(np.dot(np.transpose(mu1-mu2), Xtest - b)/denominator)
+
+    return [Ytest]
+
+mu1 = sge(data[data[:,3] == 1][:,:3])
+mu1 = mu1[0]
+mu2 = sge(data[data[:,3] == -1][:,:3])
+mu2 = mu2[0]
+print(new_classifier(data[1500,:3], mu1, mu2))
