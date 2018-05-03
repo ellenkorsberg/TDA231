@@ -129,10 +129,7 @@ function res = grad(model, data, wd_coefficient)
   log_class_prob = logsoftmax(class_input); % yk
   class_prob = exp(log_class_prob); 
   % class_prob is the model output.
-  
-  % TODO - Write code here ---------------
 
-    % Right now the function just returns a lot of zeros. Your job is to change that.
     first = (class_prob - data.targets)' * model.hid_to_class;
     second = first' .* logisticDerivative(hid_input);
     third = second * data.inputs';
