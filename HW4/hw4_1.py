@@ -21,4 +21,13 @@ yy = a * xx - (clf.intercept_[0]) / w[1]
 plt.plot(X[positiveIndices,0], X[positiveIndices,1], 'r.')
 plt.plot(X[negativeIndices,0], X[negativeIndices,1], 'b.')
 plt.plot(xx, yy, 'k-')
+
+
+misclassified = 0
+for i in range(1,200):
+    if clf.predict([[X[i,0], X[i,1]]]) != Y[i]:
+        misclassified += 1
+        plt.plot(X[i,0], X[i,1], 'go')
+
 plt.show()
+print(misclassified)
