@@ -14,8 +14,8 @@ clf = SVC(kernel='linear')
 clf.fit(X, Y)
 
 # Plotting the data and the decision boundary.
-plt.plot(X[positiveIndices,0], X[positiveIndices,1], 'ro')
-plt.plot(X[negativeIndices,0], X[negativeIndices,1], 'bo')
+plt.plot(X[positiveIndices,0], X[positiveIndices,1], 'ro', markersize=8, markeredgecolor='none')
+plt.plot(X[negativeIndices,0], X[negativeIndices,1], 'bo', markersize=8, markeredgecolor='none')
 plt.plot(X[clf.support_,0], X[clf.support_, 1], 'w.')
 
 w = clf.coef_[0]
@@ -33,7 +33,7 @@ misclassified = 0
 for i in range(1,200):
     if clf.predict([[X[i,0], X[i,1]]]) != Y[i]:
         misclassified += 1
-        plt.plot(X[i,0], X[i,1], 'g.')
+        plt.plot(X[i,0], X[i,1], 'go', markersize=5, markeredgecolor='none')
 
 # Calculating and printing the (soft) margin.
 margin = 2/np.sqrt(w[0]**2 + w[1]**2)
