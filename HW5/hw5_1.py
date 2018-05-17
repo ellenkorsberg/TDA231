@@ -47,13 +47,13 @@ def kMeans(X, k):
 
     # Mark out which data points that changed assingment since the second iteration
     changedAssignments = X[np.unique(np.where((assignmentAfter2Iter == Z) == False)[0])]
-    plt.scatter(changedAssignments[:,0], changedAssignments[:,1], marker = "o", color = "y", s = 40, alpha = 0.5)
+    plt.scatter(changedAssignments[:,0], changedAssignments[:,1], marker = "o", color = "y", s = 40, alpha = 0.7)
 
     print("Iterations: %s" % iterations)
     colors = itertools.cycle(["r", "b", "g", "m", "y"])
     for i in range(len(mu)):
         classColor = next(colors)
-        plt.scatter(mu[i][0], mu[i][1], color = classColor, marker = "o", s = 60)
+        plt.scatter(mu[i][0], mu[i][1], color = classColor, marker = "o", s = 70)
         classData = X[np.where(np.where(Z == 1)[1] == i)]
         plt.scatter(classData[:,0], classData[:,1], color = classColor, alpha = 0.8, marker = ".")
 
