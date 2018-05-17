@@ -2,9 +2,10 @@ import scipy.io
 import numpy as np
 import itertools
 import matplotlib.pyplot as plt
+import math
 from copy import copy, deepcopy
 
-mat = scipy.io.loadmat('hw5_p1a.mat')
+mat = scipy.io.loadmat('hw5_p1b.mat')
 X = mat['X']
 
 def kMeans(X, k):
@@ -58,7 +59,61 @@ def kMeans(X, k):
         plt.scatter(classData[:,0], classData[:,1], color = classColor, alpha = 0.8, marker = ".")
 
     plt.show()
+    return
 
-kMeans(X, 2)
+#kMeans(X, 2)
 
-#def kernelKMeans(k):
+def gaussianRBFkernel(x, y):
+    sigma = 0.2
+    norm = (np.linalg.norm(x-y))**2
+    return math.exp(-norm/(2*sigma**2))
+
+def calculateDistance(X, k, z, index):
+    N = np.sum(z[:,k])
+
+    sum1 = 0
+    sum2 = 0
+    for i in range(X.shape[0]):
+        sum1 = sum1 + z[i,k]*gaussianRBFkernel(X[index,:], X[i,:])
+        for j in range(X.shape[0]):
+            sum2 = sum2 + z[i,k]*z[j,k]*gaussianRBFkernel(X[i,:], X[j,:])
+
+    return gaussianRBFkernel(X[index,:], X[index,:]) - 2*(1/N)*sum1 + (1/N**2)*sum2
+
+
+def kernelKMeans(X, k):
+
+    Z = np.zeros((X.shape[0], k))
+
+    for i in range(X.shape[0]):
+        rand = np.random.randint(low = 0, high = X.shape[1])
+        Z[i,rand] = 1
+
+
+    formerZ = []
+    dist = np.zeros((X.shape[0], k))
+    iterations = 0
+    while True:
+
+        formerZ = deepcopy(Z)
+        for i in range(X.shape[0]):
+            for j in range(k):
+                dist[i,j] = calculateDistance(X, j, Z, i)
+            for j in range(k):
+                Z[i,j] = int(np.argmin(dist[i]) == j)
+
+        if np.array_equal(formerZ, Z):
+            break
+
+        iterations += 1
+
+    print("Iterations: %s" % iterations)
+    colors = itertools.cycle(["r", "b", "g", "m", "y"])
+    for i in range(k):
+        classColor = next(colors)
+        classData = X[np.where(np.where(Z == 1)[1] == i)]
+        plt.scatter(classData[:,0], classData[:,1], color = classColor, alpha = 0.8, marker = ".")
+
+    plt.show()
+
+kernelKMeans(X, 2)
