@@ -61,8 +61,6 @@ def kMeans(X, k):
     plt.show()
     return
 
-#kMeans(X, 2)
-
 def gaussianRBFkernel(x, y):
     sigma = 0.2
     norm = (np.linalg.norm(x-y))**2
@@ -93,6 +91,7 @@ def kernelKMeans(X, k):
     formerZ = []
     dist = np.zeros((X.shape[0], k))
     iterations = 0
+
     while True:
 
         formerZ = deepcopy(Z)
